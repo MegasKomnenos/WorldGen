@@ -63,7 +63,7 @@ public static class Noise {
 	}
 }
 
-public static class MiscHelpers 
+public static class Misc
 {
     public static List<int> GetHexNeighb(int width, int height, int x, int y)
     {
