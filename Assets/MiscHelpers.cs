@@ -65,52 +65,52 @@ public static class Noise {
 
 public static class MiscHelpers 
 {
-    public static List<int> GetHexNeighbor(int width, int height, int x, int y)
+    public static List<int> GetHexNeighb(int width, int height, int x, int y)
     {
-        var neighbors = new List<int>();
+        var neighb = new List<int>();
         var i = y * width + x;
 
         if (x + 1 < width)
         {
-            neighbors.Add(i + 1);
+            neighb.Add(i + 1);
         }
         if (x > 0)
         {
-            neighbors.Add(i - 1);
+            neighb.Add(i - 1);
         }
         if (y > 0)
         {
-            neighbors.Add(i - width);
+            neighb.Add(i - width);
 
             if (y % 2 == 1)
             {
                 if (x + 1 < width)
                 {
-                    neighbors.Add(i - width + 1);
+                    neighb.Add(i - width + 1);
                 }
             }
             else if (x > 0)
             {
-                neighbors.Add(i - width - 1);
+                neighb.Add(i - width - 1);
             }
         }
         if (y + 1 < height)
         {
-            neighbors.Add(i + width);
+            neighb.Add(i + width);
 
             if (y % 2 == 0)
             {
                 if (x > 0)
                 {
-                    neighbors.Add(i + width - 1);
+                    neighb.Add(i + width - 1);
                 }
             }
             else if (x + 1 < width)
             {
-                neighbors.Add(i + width + 1);
+                neighb.Add(i + width + 1);
             }
         }
 
-        return neighbors;
+        return neighb;
     }
 }
