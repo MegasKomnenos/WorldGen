@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class World : MonoBehaviour
 {
@@ -17,18 +18,16 @@ public class World : MonoBehaviour
     public float weightSea;
 
     public int seedHeight;
-    public int seedSwamp;
 
-    public GameObject prefabWaterShallow;
-    public GameObject prefabWaterDeep;
-    public GameObject prefabLandPlain;
-    public GameObject prefabLandHill;
-    public GameObject prefabLandMountain;
+    public Tilemap mapTerrain;
 
-    public GameObject prefabForest;
-    public GameObject prefabSwamp;
+    public Tile tileWaterShallow;
+    public Tile tileWaterDeep;
+    public Tile tileLandPlain;
+    public Tile tileLandHill;
+    public Tile tileLandMountain;
 
-    private List<GameObject> listTile;
+    public List<List<int>> listNeighb;
 
     // Start is called before the first frame update
     void Start()
@@ -41,11 +40,8 @@ public class World : MonoBehaviour
             widthPixel += Mathf.Sqrt(3) / 2;
         }
 
-        var mapHeight = Noise.GenerateNoiseMap(detail, detail, seedHeight, scale, octaves, persistance, lacunarity);
-        var mapSwamp = Noise.GenerateNoiseMap(detail, detail, seedSwamp, scale, octaves, persistance, lacunarity);
-
+        var mapElevation = Noise.GenerateNoiseMap(detail, detail, seedHeight, scale, octaves, persistance, lacunarity);
         var listElevation = new List<float>(width * height);
-        var listFeature = new List<float>(width * height);
 
         for (var y = 0; y < height; ++y)
         {
@@ -60,24 +56,15 @@ public class World : MonoBehaviour
                 }
 
                 listElevation.Add(
-                    mapHeight[(int)(xCenter / widthPixel * detail), (int)(yCenter / heightPixel * detail)]
+                    mapElevation[(int)(xCenter / widthPixel * detail), (int)(yCenter / heightPixel * detail)]
                     * weightPeak
                     - (Mathf.Pow(widthPixel / 2 - xCenter, 2) + Mathf.Pow(heightPixel / 2 - yCenter, 2))
                     / (Mathf.Pow(widthPixel / 2, 2) + Mathf.Pow(heightPixel / 2, 2))
                     * weightSea
                 );
-                listFeature.Add(
-                    mapSwamp[(int)(xCenter / widthPixel * detail), (int)(yCenter / heightPixel * detail)]
-                    - listElevation[listElevation.Count - 1] / 2
-                );
             }
         }
 
-        listTile = new List<GameObject>(width * height);
-
-        float xChange = Mathf.Sqrt(3);
-        float xOff = xChange / 2;
-        float yChange = 1.5F;
         var i = 0;
 
         for (var y = 0; y < height; ++y)
@@ -86,41 +73,23 @@ public class World : MonoBehaviour
             {
                 if (listElevation[i] >= 0.8)
                 {
-                    listTile.Add(Instantiate(prefabLandMountain, new Vector3(xChange * x + y % 2 * xOff, 0, yChange * y), Quaternion.identity));
+                    mapTerrain.SetTile(new Vector3Int(x, y, 0), tileLandMountain);
                 }
                 else if (listElevation[i] >= 0.6)
                 {
-                    listTile.Add(Instantiate(prefabLandHill, new Vector3(xChange * x + y % 2 * xOff, 0, yChange * y), Quaternion.identity));
+                    mapTerrain.SetTile(new Vector3Int(x, y, 0), tileLandHill);
                 }
                 else if (listElevation[i] >= 0.4)
                 {
-                    listTile.Add(Instantiate(prefabLandPlain, new Vector3(xChange * x + y % 2 * xOff, 0, yChange * y), Quaternion.identity));
+                    mapTerrain.SetTile(new Vector3Int(x, y, 0), tileLandPlain);
                 }
                 else if (listElevation[i] >= 0.2)
                 {
-                    listTile.Add(Instantiate(prefabWaterShallow, new Vector3(xChange * x + y % 2 * xOff, 0, yChange * y), Quaternion.identity));
+                    mapTerrain.SetTile(new Vector3Int(x, y, 0), tileWaterShallow);
                 }
                 else 
                 {
-                    listTile.Add(Instantiate(prefabWaterDeep, new Vector3(xChange * x + y % 2 * xOff, 0, yChange * y), Quaternion.identity));
-                }
-
-                var tile = listTile[i].GetComponent<Tile>();
-
-                tile.neighb = Misc.GetHexNeighb(width, height, x, y);
-
-                if (tile.terrain != Misc.TileTerrainType.WaterShallow && tile.terrain != Misc.TileTerrainType.WaterDeep)
-                {
-                    if (listFeature[i] >= 0.5)
-                    {
-                        tile.feature = Misc.TileFeatureType.Swamp;
-                        tile.featureObject = Instantiate(prefabSwamp, listTile[i].GetComponent<Transform>());
-                    }
-                    else 
-                    {
-                        tile.feature = Misc.TileFeatureType.Forest;
-                        tile.featureObject = Instantiate(prefabForest, listTile[i].GetComponent<Transform>());
-                    }
+                    mapTerrain.SetTile(new Vector3Int(x, y, 0), tileWaterDeep);
                 }
 
                 ++i;

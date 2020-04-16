@@ -46,7 +46,6 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Misc.cs" />
-     <Compile Include="Assets\Tile.cs" />
      <Compile Include="Assets\World.cs" />
  <Reference Include="UnityEngine">
  <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
