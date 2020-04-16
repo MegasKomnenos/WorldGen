@@ -17,12 +17,16 @@ public class World : MonoBehaviour
     public float weightSea;
 
     public int seedHeight;
+    public int seedSwamp;
 
     public GameObject prefabWaterShallow;
     public GameObject prefabWaterDeep;
     public GameObject prefabLandPlain;
     public GameObject prefabLandHill;
     public GameObject prefabLandMountain;
+
+    public GameObject prefabForest;
+    public GameObject prefabSwamp;
 
     private List<GameObject> listTile;
 
@@ -38,8 +42,10 @@ public class World : MonoBehaviour
         }
 
         var mapHeight = Noise.GenerateNoiseMap(detail, detail, seedHeight, scale, octaves, persistance, lacunarity);
+        var mapSwamp = Noise.GenerateNoiseMap(detail, detail, seedSwamp, scale, octaves, persistance, lacunarity);
 
         var listElevation = new List<float>(width * height);
+        var listFeature = new List<float>(width * height);
 
         for (var y = 0; y < height; ++y)
         {
@@ -59,6 +65,10 @@ public class World : MonoBehaviour
                     - (Mathf.Pow(widthPixel / 2 - xCenter, 2) + Mathf.Pow(heightPixel / 2 - yCenter, 2))
                     / (Mathf.Pow(widthPixel / 2, 2) + Mathf.Pow(heightPixel / 2, 2))
                     * weightSea
+                );
+                listFeature.Add(
+                    mapSwamp[(int)(xCenter / widthPixel * detail), (int)(yCenter / heightPixel * detail)]
+                    - listElevation[listElevation.Count - 1] / 2
                 );
             }
         }
@@ -93,6 +103,24 @@ public class World : MonoBehaviour
                 else 
                 {
                     listTile.Add(Instantiate(prefabWaterDeep, new Vector3(xChange * x + y % 2 * xOff, 0, yChange * y), Quaternion.identity));
+                }
+
+                var tile = listTile[i].GetComponent<Tile>();
+
+                tile.neighb = Misc.GetHexNeighb(width, height, x, y);
+
+                if (tile.terrain != Misc.TileTerrainType.WaterShallow && tile.terrain != Misc.TileTerrainType.WaterDeep)
+                {
+                    if (listFeature[i] >= 0.5)
+                    {
+                        tile.feature = Misc.TileFeatureType.Swamp;
+                        tile.featureObject = Instantiate(prefabSwamp, listTile[i].GetComponent<Transform>());
+                    }
+                    else 
+                    {
+                        tile.feature = Misc.TileFeatureType.Forest;
+                        tile.featureObject = Instantiate(prefabForest, listTile[i].GetComponent<Transform>());
+                    }
                 }
 
                 ++i;

@@ -113,4 +113,20 @@ public static class Misc
 
         return neighb;
     }
+
+    public enum TileTerrainType 
+    {  
+        Mountain,
+        Hill,
+        Plain,
+        WaterShallow,
+        WaterDeep
+    }
+
+    public enum TileFeatureType
+    {
+        None,
+        Forest,
+        Swamp
+    }
 }
