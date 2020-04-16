@@ -20,6 +20,7 @@ public class World : MonoBehaviour
     public int seedHeight;
 
     public Tilemap mapTerrain;
+    public Tilemap mapFeature;
 
     public Tile tileWaterShallow;
     public Tile tileWaterDeep;
