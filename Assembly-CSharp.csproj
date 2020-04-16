@@ -45,6 +45,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\CameraMovement.cs" />
      <Compile Include="Assets\Misc.cs" />
      <Compile Include="Assets\World.cs" />
  <Reference Include="UnityEngine">
