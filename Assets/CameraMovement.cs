@@ -33,7 +33,7 @@ public class CameraMovement : MonoBehaviour
         {
             movementHistory *= 0;
 
-            transform.position += new Vector3(0, 0, Input.mouseScrollDelta.y * scrollSpeed);
+            transform.position += new Vector3(0, 0, Input.mouseScrollDelta.y * Mathf.Sqrt(Mathf.Abs(transform.position.z)) * scrollSpeed);
         }
     }
 }
