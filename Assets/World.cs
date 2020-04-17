@@ -28,7 +28,7 @@ public class World : MonoBehaviour
     public Tile tileLandHill;
     public Tile tileLandMountain;
 
-    public List<List<int>> listNeighb;
+    public Camera cameraPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -101,6 +101,20 @@ public class World : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            var ray = cameraPlayer.ScreenPointToRay(Input.mousePosition);
+            var hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+            if (hit.collider != null)
+            {
+                Debug.Log("Did hit");
+                Debug.Log(hit.point);
+            }
+            else
+            {
+                Debug.Log("Did not hit");
+            }
+        }
     }
 }
