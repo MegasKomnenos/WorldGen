@@ -21,6 +21,7 @@ public class World : MonoBehaviour
 
     public Tilemap mapTerrain;
     public Tilemap mapFeature;
+    public Grid grid;
 
     public Tile tileWaterShallow;
     public Tile tileWaterDeep;
@@ -29,6 +30,8 @@ public class World : MonoBehaviour
     public Tile tileLandMountain;
 
     public Camera cameraPlayer;
+
+    private List<Misc.TypeTerrain> listTerrain;
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +69,8 @@ public class World : MonoBehaviour
             }
         }
 
+        listTerrain = new List<Misc.TypeTerrain>(width * height);
+
         var i = 0;
 
         for (var y = 0; y < height; ++y)
@@ -75,22 +80,27 @@ public class World : MonoBehaviour
                 if (listElevation[i] >= 0.8)
                 {
                     mapTerrain.SetTile(new Vector3Int(x, y, 0), tileLandMountain);
+                    listTerrain.Add(Misc.TypeTerrain.Mountain);
                 }
                 else if (listElevation[i] >= 0.6)
                 {
                     mapTerrain.SetTile(new Vector3Int(x, y, 0), tileLandHill);
+                    listTerrain.Add(Misc.TypeTerrain.Hill);
                 }
                 else if (listElevation[i] >= 0.4)
                 {
                     mapTerrain.SetTile(new Vector3Int(x, y, 0), tileLandPlain);
+                    listTerrain.Add(Misc.TypeTerrain.Plain);
                 }
                 else if (listElevation[i] >= 0.2)
                 {
                     mapTerrain.SetTile(new Vector3Int(x, y, 0), tileWaterShallow);
+                    listTerrain.Add(Misc.TypeTerrain.Shallow);
                 }
                 else 
                 {
                     mapTerrain.SetTile(new Vector3Int(x, y, 0), tileWaterDeep);
+                    listTerrain.Add(Misc.TypeTerrain.Deep);
                 }
 
                 ++i;
@@ -109,7 +119,37 @@ public class World : MonoBehaviour
             if (hit.collider != null)
             {
                 Debug.Log("Did hit");
-                Debug.Log(hit.point);
+
+                var tile = new Vector3Int(-1, -1, -1);
+
+                var tile0 = grid.WorldToCell(hit.point + new Vector2(0, 5f / 66f));
+                var tile1 = grid.WorldToCell(hit.point);
+                var tile2 = grid.WorldToCell(hit.point - new Vector2(0, 5f / 66f));
+                var tile3 = grid.WorldToCell(hit.point - new Vector2(0, 10f / 66f));
+
+                var i0 = Misc.GetIndexFromCoord(width, height, tile0.x, tile0.y);
+                var i1 = Misc.GetIndexFromCoord(width, height, tile1.x, tile1.y);
+                var i2 = Misc.GetIndexFromCoord(width, height, tile2.x, tile2.y);
+                var i3 = Misc.GetIndexFromCoord(width, height, tile3.x, tile3.y);
+
+                if (i0 != -1 && (listTerrain[i0] == Misc.TypeTerrain.Shallow || listTerrain[i0] == Misc.TypeTerrain.Deep))
+                {
+                    tile = tile0;
+                }
+                if (i1 != -1 && listTerrain[i1] == Misc.TypeTerrain.Plain)
+                {
+                    tile = tile1;
+                }
+                if (i2 != -1 && listTerrain[i2] == Misc.TypeTerrain.Hill)
+                {
+                    tile = tile2;
+                }
+                if (i3 != -1 && listTerrain[i3] == Misc.TypeTerrain.Mountain)
+                {
+                    tile = tile3;
+                }
+
+                Debug.Log(tile);
             }
             else
             {

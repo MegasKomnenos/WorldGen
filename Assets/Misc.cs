@@ -113,4 +113,23 @@ public static class Misc
 
         return neighb;
     }
+
+    public static int GetIndexFromCoord(int width, int height, int x, int y)
+    {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+        {
+            return -1;
+        }
+
+        return y * width + x;
+    }
+
+    public enum TypeTerrain
+    {
+        Plain,
+        Hill,
+        Mountain,
+        Shallow,
+        Deep
+    }
 }

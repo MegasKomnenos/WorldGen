@@ -162,6 +162,7 @@ MonoBehaviour:
   seedHeight: 3
   mapTerrain: {fileID: 872077365}
   mapFeature: {fileID: 1133731826}
+  grid: {fileID: 765923130}
   tileWaterShallow: {fileID: 11400000, guid: 235f4765e4395304d8bab68983bc042a, type: 2}
   tileWaterDeep: {fileID: 11400000, guid: e03542322addf7148b6be88daaa9987c, type: 2}
   tileLandPlain: {fileID: 11400000, guid: 48eb3a0e82c4fb246be79ae17e79a897, type: 2}
