@@ -29,9 +29,7 @@ public class World : MonoBehaviour
     public Tile tileLandHill;
     public Tile tileLandMountain;
 
-    public Camera cameraPlayer;
-
-    private List<Misc.TypeTerrain> listTerrain;
+    public List<Misc.TypeTerrain> listTerrain;
 
     // Start is called before the first frame update
     void Start()
@@ -111,50 +109,5 @@ public class World : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            var ray = cameraPlayer.ScreenPointToRay(Input.mousePosition);
-            var hit = Physics2D.Raycast(ray.origin, ray.direction);
-
-            if (hit.collider != null)
-            {
-                Debug.Log("Did hit");
-
-                var tile = new Vector3Int(-1, -1, -1);
-
-                var tile0 = grid.WorldToCell(hit.point + new Vector2(0, 5f / 66f));
-                var tile1 = grid.WorldToCell(hit.point);
-                var tile2 = grid.WorldToCell(hit.point - new Vector2(0, 5f / 66f));
-                var tile3 = grid.WorldToCell(hit.point - new Vector2(0, 10f / 66f));
-
-                var i0 = Misc.GetIndexFromCoord(width, height, tile0.x, tile0.y);
-                var i1 = Misc.GetIndexFromCoord(width, height, tile1.x, tile1.y);
-                var i2 = Misc.GetIndexFromCoord(width, height, tile2.x, tile2.y);
-                var i3 = Misc.GetIndexFromCoord(width, height, tile3.x, tile3.y);
-
-                if (i0 != -1 && (listTerrain[i0] == Misc.TypeTerrain.Shallow || listTerrain[i0] == Misc.TypeTerrain.Deep))
-                {
-                    tile = tile0;
-                }
-                if (i1 != -1 && listTerrain[i1] == Misc.TypeTerrain.Plain)
-                {
-                    tile = tile1;
-                }
-                if (i2 != -1 && listTerrain[i2] == Misc.TypeTerrain.Hill)
-                {
-                    tile = tile2;
-                }
-                if (i3 != -1 && listTerrain[i3] == Misc.TypeTerrain.Mountain)
-                {
-                    tile = tile3;
-                }
-
-                Debug.Log(tile);
-            }
-            else
-            {
-                Debug.Log("Did not hit");
-            }
-        }
     }
 }

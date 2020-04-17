@@ -124,6 +124,40 @@ public static class Misc
         return y * width + x;
     }
 
+    public static Vector3Int GetTile(Vector2 point, Grid grid, World world)
+    {
+        var tile = new Vector3Int(-1, -1, -1);
+
+        var tile0 = grid.WorldToCell(point + new Vector2(0, 5f / 66f));
+        var tile1 = grid.WorldToCell(point);
+        var tile2 = grid.WorldToCell(point - new Vector2(0, 5f / 66f));
+        var tile3 = grid.WorldToCell(point - new Vector2(0, 10f / 66f));
+
+        var i0 = GetIndexFromCoord(world.width, world.height, tile0.x, tile0.y);
+        var i1 = GetIndexFromCoord(world.width, world.height, tile1.x, tile1.y);
+        var i2 = GetIndexFromCoord(world.width, world.height, tile2.x, tile2.y);
+        var i3 = GetIndexFromCoord(world.width, world.height, tile3.x, tile3.y);
+
+        if (i0 != -1 && (world.listTerrain[i0] == TypeTerrain.Shallow || world.listTerrain[i0] == TypeTerrain.Deep))
+        {
+            tile = tile0;
+        }
+        if (i1 != -1 && world.listTerrain[i1] == TypeTerrain.Plain)
+        {
+            tile = tile1;
+        }
+        if (i2 != -1 && world.listTerrain[i2] == TypeTerrain.Hill)
+        {
+            tile = tile2;
+        }
+        if (i3 != -1 && world.listTerrain[i3] == TypeTerrain.Mountain)
+        {
+            tile = tile3;
+        }
+
+        return tile;
+    }
+
     public enum TypeTerrain
     {
         Plain,
